@@ -2,7 +2,6 @@
 
 
 ## Simple Server
-
 ---
 
 
@@ -50,13 +49,13 @@ npm install   \
 ```
 
 ### run server
+
 ```sh
 node server.js
 ```
 
 
 ## Add GraphQL
-
 ---
 
 ### install
@@ -65,5 +64,45 @@ node server.js
 npm install             \
   graphql               \
   graphql-tools         \
-  apollo-server-express 
+  apollo-server-express
 ```
+
+### Add GraphQL typeDefs
+
+```
+type Query {
+  greeting: String
+}
+```
+
+### `/hello-world-server/server.js`
+
+```js
+const { graphqlExpress, graphiqlExpress } = require("apollo-server-express");
+const { makeExecutableSchema }            = require("graphql-tools");
+
+const typeDefs = `
+  type Query {
+    greeting: String
+  }
+`;
+
+const resolvers = {
+  Query: {
+    greeting: () => "Hello World!"
+  }
+};
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+app.use('/graphql', graphqlExpress({ schema }));
+app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' })); // if you want GraphiQL enabled
+```
+
+### run server
+
+```sh
+node server.js
+```
+
+### [GraphQL GUI](http://localhost:9000/graphiql)
